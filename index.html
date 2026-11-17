@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXORA LeadFlow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#070b14; --panel:#0e1524; --panel2:#131c30; --line:#1f2a44;
+  --text:#e8eefc; --muted:#8a97b5; --cyan:#22d3ee; --violet:#8b5cf6;
+  --green:#34d399; --amber:#fbbf24; --red:#f87171; --radius:14px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:'Space Grotesk','IBM Plex Sans Arabic',system-ui,sans-serif;
+  background-image:radial-gradient(circle at 15% -10%,rgba(139,92,246,.25),transparent 45%),
+  radial-gradient(circle at 100% 0%,rgba(34,211,238,.18),transparent 40%);
+  min-height:100vh}
+html[lang=ar] body{font-family:'IBM Plex Sans Arabic','Space Grotesk',sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:18px 16px 80px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--cyan),var(--violet));
+  display:grid;place-items:center;font-weight:700;color:#05080f;box-shadow:0 0 24px rgba(34,211,238,.4)}
+.brand h1{font-size:18px;margin:0;letter-spacing:.06em}
+.brand small{display:block;color:var(--muted);font-size:12px;letter-spacing:.02em}
+.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 14px;
+  border-radius:10px;font:inherit;font-size:14px;cursor:pointer}
+.btn:hover{border-color:var(--cyan)}
+.btn.primary{background:linear-gradient(135deg,var(--cyan),var(--violet));color:#05080f;border:none;font-weight:700}
+.btn.danger{color:var(--red)}
+.btn.sm{padding:6px 10px;font-size:12px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+.stat b{display:block;font-size:26px}
+.stat span{color:var(--muted);font-size:12px}
+.stat.alert b{color:var(--amber)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.toolbar input,.toolbar select{flex:1;min-width:140px}
+input,select,textarea{background:var(--panel2);border:1px solid var(--line);color:var(--text);
+  border-radius:10px;padding:10px 12px;font:inherit;font-size:14px;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.15)}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px}
+.tab{white-space:nowrap;padding:7px 12px;border-radius:999px;border:1px solid var(--line);
+  background:transparent;color:var(--muted);font:inherit;font-size:13px;cursor:pointer}
+.tab.on{color:#05080f;background:var(--cyan);border-color:var(--cyan);font-weight:700}
+.list{display:grid;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;
+  display:grid;gap:8px;position:relative;overflow:hidden}
+.card.overdue{border-color:rgba(251,191,36,.6)}
+.card .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.card h3{margin:0;font-size:16px}
+.meta{color:var(--muted);font-size:13px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.pill{font-size:11px;padding:4px 9px;border-radius:999px;font-weight:700;white-space:nowrap}
+.s-new{background:rgba(34,211,238,.15);color:var(--cyan)}
+.s-contacted{background:rgba(139,92,246,.18);color:#b9a3ff}
+.s-viewing{background:rgba(251,191,36,.15);color:var(--amber)}
+.s-negotiation{background:rgba(244,114,182,.15);color:#f9a8d4}
+.s-won{background:rgba(52,211,153,.15);color:var(--green)}
+.s-lost{background:rgba(248,113,113,.12);color:var(--red)}
+.fu{font-size:13px}
+.fu.late{color:var(--amber);font-weight:700}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.actions a{text-decoration:none}
+.notes{font-size:13px;color:#c3cce3;background:var(--panel2);border-radius:8px;padding:8px 10px;white-space:pre-wrap}
+.empty{text-align:center;color:var(--muted);padding:40px 10px;border:1px dashed var(--line);border-radius:var(--radius)}
+.modal{position:fixed;inset:0;background:rgba(3,6,12,.75);backdrop-filter:blur(4px);display:none;
+  align-items:flex-end;justify-content:center;z-index:10}
+.modal.open{display:flex}
+.sheet{background:var(--panel);border:1px solid var(--line);border-radius:18px 18px 0 0;width:100%;max-width:560px;
+  max-height:92vh;overflow:auto;padding:18px}
+@media(min-width:700px){.modal{align-items:center}.sheet{border-radius:18px}}
+.sheet h2{margin:0 0 14px;font-size:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label{display:grid;gap:5px;font-size:12px;color:var(--muted);margin-bottom:10px}
+.row{display:flex;gap:8px;justify-content:flex-end;margin-top:6px}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--cyan);
+  padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:.3s;pointer-events:none;z-index:20}
+.toast.show{opacity:1}
+.fab{position:fixed;bottom:20px;inset-inline-end:20px;width:56px;height:56px;border-radius:50%;font-size:28px;
+  display:none;z-index:5;box-shadow:0 8px 30px rgba(34,211,238,.35)}
+.auth{display:grid;place-items:center;padding-top:6vh}
+.authcard{border-radius:18px;max-width:420px;background:linear-gradient(180deg,var(--panel),var(--panel2));
+  box-shadow:0 0 60px rgba(139,92,246,.2)}
+.authcard .sub{color:var(--muted);font-size:13px;margin:-6px 0 16px}
+.msg{font-size:13px;min-height:18px;margin-bottom:10px}
+.msg.err{color:var(--red)}.msg.ok{color:var(--green)}
+.linkbtn{background:none;border:none;color:var(--cyan);font:inherit;font-size:13px;margin-top:12px;cursor:pointer;width:100%}
+button:disabled{opacity:.6;cursor:wait}
+@media(max-width:640px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .hide-m{display:none}
+  .fab{display:block}
+  .grid2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">N</div>
+      <div><h1>NEXORA <span style="color:var(--cyan)">LeadFlow</span></h1><small data-t="tagline"></small></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="langBtn"></button>
+      <button class="btn primary hide-m app-only" id="addBtn" data-t="addLead"></button>
+      <button class="btn app-only" id="logoutBtn" data-t="logout"></button>
+    </div>
+  </header>
+
+  <section id="authView" class="auth" style="display:none">
+    <form class="sheet authcard" id="authForm">
+      <h2 id="authTitle"></h2>
+      <p class="sub" data-t="authSub"></p>
+      <label><span data-t="email"></span><input name="email" type="email" required autocomplete="email" dir="ltr"></label>
+      <label><span data-t="password"></span><input name="password" type="password" required minlength="6" autocomplete="current-password" dir="ltr"></label>
+      <div class="msg" id="authMsg"></div>
+      <button type="submit" class="btn primary" style="width:100%" id="authSubmit"></button>
+      <button type="button" class="linkbtn" id="authSwitch"></button>
+    </form>
+  </section>
+
+  <div id="appView" style="display:none">
+  <section class="stats">
+    <div class="stat"><b id="stTotal">0</b><span data-t="stTotal"></span></div>
+    <div class="stat alert"><b id="stDue">0</b><span data-t="stDue"></span></div>
+    <div class="stat"><b id="stActive">0</b><span data-t="stActive"></span></div>
+    <div class="stat"><b id="stWon">0</b><span data-t="stWon"></span></div>
+  </section>
+
+  <div class="toolbar">
+    <input id="search" type="search">
+    <select id="sort">
+      <option value="fu" data-t="sortFu"></option>
+      <option value="new" data-t="sortNew"></option>
+    </select>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="list" id="list"></div>
+  <p style="color:var(--muted);font-size:12px;text-align:center;margin-top:24px"><span data-t="note"></span> · <bdi id="whoami"></bdi></p>
+  </div>
+  <div id="loading" class="empty" data-t="loading"></div>
+</div>
+
+<button class="btn primary fab" id="fab">+</button>
+
+<div class="modal" id="formModal">
+  <form class="sheet" id="form">
+    <h2 id="formTitle"></h2>
+    <label><span data-t="fName"></span><input name="name" required></label>
+    <div class="grid2">
+      <label><span data-t="fPhone"></span><input name="phone" type="tel" placeholder="+974 5xxx xxxx" required></label>
+      <label><span data-t="fSource"></span><select name="source" id="srcSel"></select></label>
+    </div>
+    <div class="grid2">
+      <label><span data-t="fInterest"></span><input name="interest"></label>
+      <label><span data-t="fBudget"></span><input name="budget" inputmode="numeric"></label>
+    </div>
+    <div class="grid2">
+      <label><span data-t="fStatus"></span><select name="status" id="stSel"></select></label>
+      <label><span data-t="fFollow"></span><input name="follow_up" type="date"></label>
+    </div>
+    <label><span data-t="fNotes"></span><textarea name="notes" rows="3"></textarea></label>
+    <div class="row">
+      <button type="button" class="btn" id="cancelBtn" data-t="cancel"></button>
+      <button type="submit" class="btn primary" data-t="save"></button>
+    </div>
+  </form>
+</div>
+
+<div class="modal" id="confirmModal">
+  <div class="sheet">
+    <h2 data-t="confirmDel"></h2>
+    <div class="row">
+      <button class="btn" id="noDel" data-t="cancel"></button>
+      <button class="btn danger" id="yesDel" data-t="delete"></button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ====== CONNECTION SETTINGS (safe to be public: protected by Row Level Security) ======
+const SUPABASE_URL = "https://hilaragnhapvvgmyvzqu.supabase.co";
+const SUPABASE_KEY = "sb_publishable_CWVn_FxKoJvCYf5Ebh1m-Q_R3fs0bKD";
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const T = {
+ en:{tagline:"Lead management for real estate",addLead:"+ Add lead",stTotal:"Total leads",stDue:"Follow-ups due",
+  stActive:"Active deals",stWon:"Deals won",search:"Search name, phone, property…",sortFu:"Sort: next follow-up",
+  sortNew:"Sort: newest first",all:"All",fName:"Client name",fPhone:"Phone / WhatsApp",fSource:"Source",
+  fInterest:"Property interest",fBudget:"Budget (QAR)",fStatus:"Status",fFollow:"Next follow-up",fNotes:"Notes",
+  cancel:"Cancel",save:"Save lead",edit:"Edit",delete:"Delete",whatsapp:"WhatsApp",
+  newTitle:"New lead",editTitle:"Edit lead",confirmDel:"Delete this lead? This cannot be undone.",
+  empty:"No leads yet. Tap “Add lead” to create your first one.",noMatch:"No leads match your search.",
+  today:"Today",overdue:"Overdue",noFu:"No follow-up set",saved:"Lead saved",deleted:"Lead deleted",
+  sample:"Load sample leads",note:"v0.2 · Cloud sync",loading:"Loading…",logout:"Sign out",
+  login:"Sign in",signup:"Create account",authSub:"Your leads, synced securely on every device.",
+  email:"Email",password:"Password (6+ characters)",toSignup:"New here? Create an account",toLogin:"Have an account? Sign in",
+  checkEmail:"Account created. Check your email to confirm, then sign in.",errGeneric:"Something went wrong: ",
+  st:{new:"New",contacted:"Contacted",viewing:"Viewing",negotiation:"Negotiation",won:"Won",lost:"Lost"},
+  src:{website:"Website",instagram:"Instagram",propertyfinder:"Property Finder",referral:"Referral",walkin:"Walk-in",other:"Other"},
+  wa:"Hello {n}, this is a follow-up regarding your property inquiry. When would be a good time to talk?"},
+ ar:{tagline:"إدارة العملاء المحتملين للعقارات",addLead:"+ إضافة عميل",stTotal:"إجمالي العملاء",stDue:"متابعات مستحقة",
+  stActive:"صفقات نشطة",stWon:"صفقات ناجحة",search:"ابحث بالاسم أو الهاتف أو العقار…",sortFu:"ترتيب: المتابعة القادمة",
+  sortNew:"ترتيب: الأحدث أولاً",all:"الكل",fName:"اسم العميل",fPhone:"الهاتف / واتساب",fSource:"المصدر",
+  fInterest:"العقار المطلوب",fBudget:"الميزانية (ر.ق)",fStatus:"الحالة",fFollow:"موعد المتابعة",fNotes:"ملاحظات",
+  cancel:"إلغاء",save:"حفظ العميل",edit:"تعديل",delete:"حذف",whatsapp:"واتساب",
+  newTitle:"عميل جديد",editTitle:"تعديل العميل",confirmDel:"هل تريد حذف هذا العميل؟ لا يمكن التراجع.",
+  empty:"لا يوجد عملاء بعد. اضغط «إضافة عميل» لإنشاء أول عميل.",noMatch:"لا توجد نتائج مطابقة.",
+  today:"اليوم",overdue:"متأخر",noFu:"لا يوجد موعد متابعة",saved:"تم حفظ العميل",deleted:"تم حذف العميل",
+  sample:"تحميل عملاء تجريبيين",note:"v0.2 · مزامنة سحابية",loading:"جارٍ التحميل…",logout:"تسجيل الخروج",
+  login:"تسجيل الدخول",signup:"إنشاء حساب",authSub:"عملاؤك محفوظون بأمان على كل أجهزتك.",
+  email:"البريد الإلكتروني",password:"كلمة المرور (6 أحرف أو أكثر)",toSignup:"جديد؟ أنشئ حساباً",toLogin:"لديك حساب؟ سجّل الدخول",
+  checkEmail:"تم إنشاء الحساب. افتح بريدك لتأكيده، ثم سجّل الدخول.",errGeneric:"حدث خطأ: ",
+  st:{new:"جديد",contacted:"تم التواصل",viewing:"معاينة",negotiation:"تفاوض",won:"تم البيع",lost:"خسارة"},
+  src:{website:"الموقع",instagram:"إنستغرام",propertyfinder:"بروبرتي فايندر",referral:"توصية",walkin:"زيارة مباشرة",other:"أخرى"},
+  wa:"مرحباً {n}، نتواصل معك بخصوص استفسارك العقاري. ما هو الوقت المناسب للحديث؟"}
+};
+const STATUSES=["new","contacted","viewing","negotiation","won","lost"];
+const SOURCES=["website","instagram","propertyfinder","referral","walkin","other"];
+let lang="ar", leads=[], filter="all", editingId=null, deleteId=null, user=null, authMode="login";
+try{lang=localStorage.getItem("nexora_lang")||"ar"}catch(e){}
+
+const $=id=>document.getElementById(id);
+const t=k=>T[lang][k];
+const todayStr=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(m){const el=$("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2200)}
+function fail(err){console.error(err);toast(t("errGeneric")+(err.message||err))}
+
+// ====== VIEWS ======
+function show(view){
+  $("loading").style.display=view==="loading"?"block":"none";
+  $("authView").style.display=view==="auth"?"grid":"none";
+  $("appView").style.display=view==="app"?"block":"none";
+  document.querySelectorAll(".app-only").forEach(el=>el.style.display=view==="app"?"":"none");
+  $("fab").style.visibility=view==="app"?"visible":"hidden";
+}
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  document.querySelectorAll("[data-t]").forEach(el=>el.textContent=t(el.dataset.t));
+  $("langBtn").textContent=lang==="en"?"العربية":"English";
+  $("search").placeholder=t("search");
+  $("srcSel").innerHTML=SOURCES.map(s=>`<option value="${s}">${t("src")[s]}</option>`).join("");
+  $("stSel").innerHTML=STATUSES.map(s=>`<option value="${s}">${t("st")[s]}</option>`).join("");
+  renderAuth();render();
+}
+function renderAuth(){
+  $("authTitle").textContent=t(authMode==="login"?"login":"signup");
+  $("authSubmit").textContent=t(authMode==="login"?"login":"signup");
+  $("authSwitch").textContent=t(authMode==="login"?"toSignup":"toLogin");
+}
+
+// ====== AUTH ======
+$("authSwitch").onclick=()=>{authMode=authMode==="login"?"signup":"login";$("authMsg").textContent="";renderAuth()};
+$("authForm").onsubmit=async e=>{
+  e.preventDefault();
+  const email=e.target.email.value.trim(), password=e.target.password.value;
+  const btn=$("authSubmit"), msg=$("authMsg");btn.disabled=true;msg.className="msg";msg.textContent="";
+  try{
+    const res=authMode==="login"
+      ? await sb.auth.signInWithPassword({email,password})
+      : await sb.auth.signUp({email,password,options:{emailRedirectTo:location.origin+location.pathname}});
+    if(res.error) throw res.error;
+    if(authMode==="signup" && !res.data.session){msg.className="msg ok";msg.textContent=t("checkEmail");authMode="login";renderAuth()}
+  }catch(err){msg.className="msg err";msg.textContent=err.message}
+  btn.disabled=false;
+};
+$("logoutBtn").onclick=()=>sb.auth.signOut();
+
+sb.auth.onAuthStateChange((_evt,session)=>{
+  const was=user&&user.id; user=session?session.user:null;
+  if(user){ $("whoami").textContent=user.email; if(was!==user.id){show("loading");fetchLeads()} }
+  else { leads=[]; show("auth") }
+});
+
+// ====== DATA ======
+async function fetchLeads(){
+  const {data,error}=await sb.from("leads").select("*").order("created_at",{ascending:false});
+  if(error){fail(error);show("app");return}
+  leads=data;show("app");render();
+}
+function isDue(l){return l.follow_up && l.follow_up<=todayStr() && !["won","lost"].includes(l.status)}
+
+function render(){
+  if(!user) return;
+  $("stTotal").textContent=leads.length;
+  $("stDue").textContent=leads.filter(isDue).length;
+  $("stActive").textContent=leads.filter(l=>!["won","lost"].includes(l.status)).length;
+  $("stWon").textContent=leads.filter(l=>l.status==="won").length;
+
+  const counts={all:leads.length};STATUSES.forEach(s=>counts[s]=leads.filter(l=>l.status===s).length);
+  $("tabs").innerHTML=["all",...STATUSES].map(s=>
+    `<button class="tab ${filter===s?"on":""}" data-f="${s}">${s==="all"?t("all"):t("st")[s]} · ${counts[s]}</button>`).join("");
+
+  const q=$("search").value.trim().toLowerCase();
+  let rows=leads.filter(l=>(filter==="all"||l.status===filter) &&
+    (!q||[l.name,l.phone,l.interest,l.notes].join(" ").toLowerCase().includes(q)));
+  if($("sort").value==="fu") rows.sort((a,b)=>(a.follow_up||"9999").localeCompare(b.follow_up||"9999"));
+  else rows.sort((a,b)=>b.created_at.localeCompare(a.created_at));
+
+  if(!leads.length){$("list").innerHTML=`<div class="empty">${t("empty")}<br><br><button class="btn" id="sampleBtn">${t("sample")}</button></div>`;
+    $("sampleBtn").onclick=loadSample;return}
+  if(!rows.length){$("list").innerHTML=`<div class="empty">${t("noMatch")}</div>`;return}
+
+  $("list").innerHTML=rows.map(l=>{
+    const due=isDue(l), td=todayStr();
+    const fu=l.follow_up?(l.follow_up<td?`⚠ ${t("overdue")} · ${l.follow_up}`:l.follow_up===td?`⏰ ${t("today")}`:`📅 ${l.follow_up}`):t("noFu");
+    const digits=(l.phone||"").replace(/\D/g,"");
+    const msg=encodeURIComponent(t("wa").replace("{n}",l.name));
+    return `<div class="card ${due?"overdue":""}">
+      <div class="top"><h3>${esc(l.name)}</h3><span class="pill s-${l.status}">${t("st")[l.status]||esc(l.status)}</span></div>
+      <div class="meta"><span>📞 <bdi>${esc(l.phone)}</bdi></span>
+        ${l.interest?`<span>🏢 ${esc(l.interest)}</span>`:""}
+        ${l.budget?`<span>💰 ${esc(l.budget)}</span>`:""}
+        <span>🔗 ${t("src")[l.source]||""}</span></div>
+      <div class="fu ${due?"late":""}">${fu}</div>
+      ${l.notes?`<div class="notes">${esc(l.notes)}</div>`:""}
+      <div class="actions">
+        <a class="btn sm" href="https://wa.me/${digits}?text=${msg}" target="_blank" rel="noopener">💬 ${t("whatsapp")}</a>
+        <select class="btn sm" data-status="${l.id}" style="width:auto">${STATUSES.map(s=>`<option value="${s}" ${s===l.status?"selected":""}>${t("st")[s]}</option>`).join("")}</select>
+        <button class="btn sm" data-edit="${l.id}">✏️ ${t("edit")}</button>
+        <button class="btn sm danger" data-del="${l.id}">🗑 ${t("delete")}</button>
+      </div></div>`}).join("");
+}
+
+const FIELDS=["name","phone","source","interest","budget","status","follow_up","notes"];
+function openForm(id){
+  editingId=id||null;const f=$("form");f.reset();
+  $("formTitle").textContent=t(id?"editTitle":"newTitle");
+  if(id){const l=leads.find(x=>x.id===id);FIELDS.forEach(k=>{if(f.elements[k])f.elements[k].value=l[k]??""})}
+  else{const d=new Date();d.setDate(d.getDate()+1);f.elements.follow_up.value=d.toISOString().slice(0,10)}
+  $("formModal").classList.add("open");setTimeout(()=>f.elements.name.focus(),50);
+}
+function closeForm(){$("formModal").classList.remove("open")}
+
+$("form").onsubmit=async e=>{
+  e.preventDefault();
+  const raw=Object.fromEntries(new FormData(e.target).entries()), data={};
+  FIELDS.forEach(k=>data[k]=raw[k]===""?null:raw[k]);
+  const btn=e.target.querySelector("[type=submit]");btn.disabled=true;
+  const q=editingId? sb.from("leads").update(data).eq("id",editingId).select().single()
+                   : sb.from("leads").insert(data).select().single();
+  const {data:row,error}=await q;btn.disabled=false;
+  if(error) return fail(error);
+  if(editingId) leads=leads.map(l=>l.id===row.id?row:l); else leads.unshift(row);
+  closeForm();render();toast(t("saved"));
+};
+
+async function loadSample(){
+  const d=n=>{const x=new Date();x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+  const rows=[
+   {name:"Ahmed Al-Kuwari",phone:"+974 5512 3456",source:"propertyfinder",interest:"3BR apartment, The Pearl",budget:"2,500,000",status:"viewing",follow_up:d(0),notes:"Prefers sea view."},
+   {name:"سارة المهندي",phone:"+974 6623 7788",source:"instagram",interest:"فيلا في لوسيل",budget:"4,000,000",status:"new",follow_up:d(-1),notes:null},
+   {name:"James Carter",phone:"+974 3345 9900",source:"website",interest:"Studio rental, West Bay",budget:"7,500 / month",status:"contacted",follow_up:d(2),notes:"Relocating in January."},
+   {name:"فاطمة الثاني",phone:"+974 5578 1122",source:"referral",interest:"تاون هاوس، الوعب",budget:"3,200,000",status:"negotiation",follow_up:d(1),notes:"طلبت خصم 5%."},
+   {name:"Omar Hassan",phone:"+974 7711 4455",source:"walkin",interest:"2BR, Msheireb",budget:"1,800,000",status:"won",follow_up:null,notes:"Contract signed."}
+  ];
+  const {error}=await sb.from("leads").insert(rows);
+  if(error) return fail(error);
+  fetchLeads();
+}
+
+$("langBtn").onclick=()=>{lang=lang==="en"?"ar":"en";try{localStorage.setItem("nexora_lang",lang)}catch(e){};applyLang()};
+$("addBtn").onclick=$("fab").onclick=()=>openForm();
+$("cancelBtn").onclick=closeForm;
+$("formModal").onclick=e=>{if(e.target.id==="formModal")closeForm()};
+$("search").oninput=render;$("sort").onchange=render;
+$("tabs").onclick=e=>{const f=e.target.dataset.f;if(f){filter=f;render()}};
+$("list").onclick=e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.edit)openForm(b.dataset.edit);
+  if(b.dataset.del){deleteId=b.dataset.del;$("confirmModal").classList.add("open")}
+};
+$("list").onchange=async e=>{
+  const id=e.target.dataset.status;if(!id)return;
+  const {error}=await sb.from("leads").update({status:e.target.value}).eq("id",id);
+  if(error) return fail(error);
+  leads.find(l=>l.id===id).status=e.target.value;render();
+};
+$("noDel").onclick=()=>$("confirmModal").classList.remove("open");
+$("yesDel").onclick=async()=>{
+  const {error}=await sb.from("leads").delete().eq("id",deleteId);
+  $("confirmModal").classList.remove("open");
+  if(error) return fail(error);
+  leads=leads.filter(l=>l.id!==deleteId);render();toast(t("deleted"));
+};
+
+show("loading");applyLang();
+</script>
+</body>
+</html>
